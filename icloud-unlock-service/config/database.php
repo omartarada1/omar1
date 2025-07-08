@@ -84,6 +84,36 @@ class Database {
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+        CREATE TABLE IF NOT EXISTS `device_versions` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `device_type` varchar(50) NOT NULL,
+            `name` varchar(255) NOT NULL,
+            `price` decimal(10,2) NOT NULL,
+            `is_active` tinyint(1) DEFAULT 1,
+            `sort_order` int(11) DEFAULT 0,
+            `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            INDEX `idx_device_type` (`device_type`),
+            INDEX `idx_active` (`is_active`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+        CREATE TABLE IF NOT EXISTS `guarantees_content` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `content` longtext,
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+        CREATE TABLE IF NOT EXISTS `website_texts` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `text_key` varchar(100) NOT NULL UNIQUE,
+            `text_value` text,
+            `description` varchar(255),
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
         -- Insert default admin user (password: admin123)
         INSERT IGNORE INTO `admin_users` (`username`, `password`, `email`) VALUES 
         ('admin', '$2y$10\$YourHashedPasswordHere', 'admin@icloudunlockpro.com');
@@ -93,6 +123,55 @@ class Database {
         ('iphone', 89.00),
         ('ipad', 79.00),
         ('mac', 149.00);
+
+        -- Insert default device versions
+        INSERT IGNORE INTO `device_versions` (`device_type`, `name`, `price`, `sort_order`) VALUES 
+        ('iphone', 'iPhone 15 Pro Max', 149.00, 1),
+        ('iphone', 'iPhone 15 Pro', 139.00, 2),
+        ('iphone', 'iPhone 15 Plus', 129.00, 3),
+        ('iphone', 'iPhone 15', 119.00, 4),
+        ('iphone', 'iPhone 14 Pro Max', 109.00, 5),
+        ('iphone', 'iPhone 14 Pro', 99.00, 6),
+        ('iphone', 'iPhone 14 Plus', 89.00, 7),
+        ('iphone', 'iPhone 14', 89.00, 8),
+        ('iphone', 'iPhone 13 Pro Max', 79.00, 9),
+        ('iphone', 'iPhone 13 Pro', 79.00, 10),
+        ('iphone', 'iPhone 13', 69.00, 11),
+        ('iphone', 'iPhone 12 Pro Max', 69.00, 12),
+        ('iphone', 'iPhone 12 Pro', 59.00, 13),
+        ('iphone', 'iPhone 12', 59.00, 14),
+        
+        ('ipad', 'iPad Pro 12.9\" (6th gen)', 99.00, 1),
+        ('ipad', 'iPad Pro 11\" (4th gen)', 89.00, 2),
+        ('ipad', 'iPad Air (5th gen)', 79.00, 3),
+        ('ipad', 'iPad (10th gen)', 69.00, 4),
+        ('ipad', 'iPad (9th gen)', 59.00, 5),
+        ('ipad', 'iPad mini (6th gen)', 69.00, 6),
+        ('ipad', 'iPad Pro 12.9\" (5th gen)', 89.00, 7),
+        ('ipad', 'iPad Pro 11\" (3rd gen)', 79.00, 8),
+        
+        ('mac', 'MacBook Pro 16\" (M3)', 199.00, 1),
+        ('mac', 'MacBook Pro 14\" (M3)', 189.00, 2),
+        ('mac', 'MacBook Air 15\" (M3)', 169.00, 3),
+        ('mac', 'MacBook Air 13\" (M3)', 159.00, 4),
+        ('mac', 'MacBook Pro 16\" (M2)', 179.00, 5),
+        ('mac', 'MacBook Pro 14\" (M2)', 169.00, 6),
+        ('mac', 'MacBook Air 13\" (M2)', 149.00, 7),
+        ('mac', 'iMac 24\" (M3)', 189.00, 8),
+        ('mac', 'Mac Studio (M2)', 219.00, 9),
+        ('mac', 'Mac Pro (M2)', 299.00, 10);
+
+        -- Insert default website texts
+        INSERT IGNORE INTO `website_texts` (`text_key`, `text_value`, `description`) VALUES 
+        ('site_title', 'Fix Smart', 'Main website title'),
+        ('site_tagline', 'Professional Apple Device Unlocking Services', 'Website tagline'),
+        ('hero_title', 'Professional iCloud Unlocking Service', 'Hero section main title'),
+        ('hero_subtitle', 'Fast, secure, and reliable iCloud removal for iPhone, iPad, and Mac devices. Get your device unlocked by professionals with years of experience.', 'Hero section subtitle'),
+        ('footer_text', 'Professional Apple device unlocking services', 'Footer description text'),
+        ('whatsapp_number', '+15551234567', 'WhatsApp contact number');
+
+        -- Insert default guarantees content (will be empty initially for admin to edit)
+        INSERT IGNORE INTO `guarantees_content` (`id`, `content`) VALUES (1, '');
 
         -- Insert default settings
         INSERT IGNORE INTO `settings` (`setting_key`, `setting_value`) VALUES 

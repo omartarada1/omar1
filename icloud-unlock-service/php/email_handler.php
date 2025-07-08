@@ -288,5 +288,247 @@ class EmailHandler {
             return false;
         }
     }
+
+    // Send service request confirmation to customer
+    public function sendServiceRequestConfirmation($data) {
+        try {
+            $to = $data['email'];
+            $subject = "Service Request Confirmation - Fix Smart";
+            
+            $message = $this->getServiceRequestCustomerTemplate($data);
+            $headers = $this->getEmailHeaders();
+
+            return mail($to, $subject, $message, $headers);
+        } catch (Exception $e) {
+            error_log("Service request customer email error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Send service request notification to admin
+    public function sendServiceRequestNotification($data) {
+        try {
+            $to = $this->settings['admin_email'] ?? 'admin@fixsmart.com';
+            $subject = "New Service Request - Order #{$data['request_id']}";
+            
+            $message = $this->getServiceRequestAdminTemplate($data);
+            $headers = $this->getEmailHeaders();
+
+            return mail($to, $subject, $message, $headers);
+        } catch (Exception $e) {
+            error_log("Service request admin email error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function getServiceRequestCustomerTemplate($data) {
+        $amount_formatted = number_format($data['amount'], 2);
+        
+        return "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <title>Service Request Confirmation</title>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f8faff; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #007aff, #0056b3); color: white; padding: 2rem; text-align: center; }
+                .header h1 { margin: 0; font-size: 1.8rem; }
+                .content { padding: 2rem; }
+                .order-details { background: #f8faff; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+                .detail-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; }
+                .detail-row:last-child { margin-bottom: 0; font-weight: bold; border-top: 2px solid #ddd; padding-top: 0.75rem; }
+                .success-icon { font-size: 3rem; color: #28a745; text-align: center; margin: 1rem 0; }
+                .steps { margin: 2rem 0; }
+                .step { display: flex; align-items: center; margin-bottom: 1rem; }
+                .step-number { background: #007aff; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-weight: bold; }
+                .cta-button { display: inline-block; background: #25d366; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 1rem 0; }
+                .footer { background: #f8f9fa; padding: 1.5rem; text-align: center; font-size: 0.9rem; color: #666; }
+                .hash-display { font-family: monospace; word-break: break-all; background: #f5f5f5; padding: 0.5rem; border-radius: 4px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>✅ Request Confirmed!</h1>
+                    <p>Thank you for choosing Fix Smart</p>
+                </div>
+                
+                <div class='content'>
+                    <div class='success-icon'>🎉</div>
+                    
+                    <h2>Your unlock request has been received</h2>
+                    <p>Hi there! We've successfully received your device unlock request and our expert team is ready to get started.</p>
+                    
+                    <div class='order-details'>
+                        <h3>Order Details</h3>
+                        <div class='detail-row'>
+                            <span>Order ID:</span>
+                            <span>#{$data['request_id']}</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span>Device:</span>
+                            <span>" . ucfirst($data['device_type']) . "</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span>Model:</span>
+                            <span>{$data['device_version']}</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span>IMEI/Serial:</span>
+                            <span>{$data['imei_serial']}</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span>Payment Method:</span>
+                            <span>USDT Cryptocurrency</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span>Transaction Hash:</span>
+                            <div class='hash-display'>{$data['transaction_hash']}</div>
+                        </div>
+                        <div class='detail-row'>
+                            <span>Total Amount:</span>
+                            <span>\${$amount_formatted}</span>
+                        </div>
+                    </div>
+                    
+                    <div class='steps'>
+                        <h3>What happens next?</h3>
+                        <div class='step'>
+                            <div class='step-number'>1</div>
+                            <div>
+                                <strong>Payment Verification</strong><br>
+                                We'll verify your USDT transaction within 1-2 hours.
+                            </div>
+                        </div>
+                        <div class='step'>
+                            <div class='step-number'>2</div>
+                            <div>
+                                <strong>Processing Begins</strong><br>
+                                Our experts start working on your device unlock immediately.
+                            </div>
+                        </div>
+                        <div class='step'>
+                            <div class='step-number'>3</div>
+                            <div>
+                                <strong>Updates & Completion</strong><br>
+                                You'll receive email updates and detailed unlock instructions (24-72 hours).
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Need help?</strong> If you have any questions about your order, don't hesitate to contact our support team.</p>
+                    
+                    <a href='https://wa.me/15551234567' class='cta-button'>💬 WhatsApp Support</a>
+                </div>
+                
+                <div class='footer'>
+                    <p>This is an automated confirmation email from Fix Smart.<br>
+                    Please keep this email for your records.</p>
+                    <p>© 2024 Fix Smart. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
+
+    private function getServiceRequestAdminTemplate($data) {
+        $amount_formatted = number_format($data['amount'], 2);
+        
+        return "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset='UTF-8'>
+            <title>New Service Request</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background: #f5f5f5; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+                .header { background: #dc3545; color: white; padding: 1.5rem; text-align: center; }
+                .content { padding: 2rem; }
+                .alert { background: #fff3cd; border: 1px solid #ffeaa7; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; }
+                .details { background: #f8f9fa; padding: 1.5rem; border-radius: 6px; }
+                .detail-row { margin-bottom: 0.75rem; }
+                .label { font-weight: bold; color: #555; }
+                .value { color: #333; }
+                .highlight { background: #e7f3ff; padding: 0.5rem; border-radius: 4px; font-family: monospace; word-break: break-all; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>🚨 New Service Request</h1>
+                    <p>Order #{$data['request_id']}</p>
+                </div>
+                
+                <div class='content'>
+                    <div class='alert'>
+                        <strong>Action Required:</strong> A new unlock request has been submitted and requires your attention.
+                    </div>
+                    
+                    <div class='details'>
+                        <h3>Request Details</h3>
+                        <div class='detail-row'>
+                            <span class='label'>Order ID:</span>
+                            <span class='value'>#{$data['request_id']}</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Customer Email:</span>
+                            <span class='value'>{$data['email']}</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Device Type:</span>
+                            <span class='value'>" . ucfirst($data['device_type']) . "</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Device Model:</span>
+                            <span class='value'>{$data['device_version']}</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>IMEI/Serial:</span>
+                            <span class='value'>{$data['imei_serial']}</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Description:</span>
+                            <span class='value'>" . ($data['description'] ?: 'N/A') . "</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Amount:</span>
+                            <span class='value'>\${$amount_formatted} USDT</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Payment Status:</span>
+                            <span class='value'>Pending Verification</span>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Transaction Hash:</span>
+                            <div class='highlight'>{$data['transaction_hash']}</div>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Wallet Address:</span>
+                            <div class='highlight'>{$data['wallet_address']}</div>
+                        </div>
+                        <div class='detail-row'>
+                            <span class='label'>Submitted:</span>
+                            <span class='value'>" . date('Y-m-d H:i:s') . "</span>
+                        </div>
+                    </div>
+                    
+                    <h3>Next Steps</h3>
+                    <ol>
+                        <li>Verify the USDT transaction on the blockchain</li>
+                        <li>Update the payment status in the admin panel</li>
+                        <li>Begin processing the device unlock</li>
+                        <li>Send progress updates to the customer</li>
+                    </ol>
+                    
+                    <p><strong>Please log in to the admin panel to manage this request.</strong></p>
+                </div>
+            </div>
+        </body>
+        </html>";
+    }
 }
 ?>

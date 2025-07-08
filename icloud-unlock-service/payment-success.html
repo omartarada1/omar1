@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Fix Smart</title>
+    <meta name="description" content="Your payment has been received and your unlock request is being processed.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>Fix Smart</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="index.html">Home</a>
+                    <a href="service-request.html">Service Request</a>
+                    <a href="guarantees.html">Guarantees</a>
+                    <a href="index.html#contact">Contact</a>
+                    <a href="admin/">Admin</a>
+                </div>
+                <div class="nav-mobile">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Success Message Section -->
+    <section class="success-page">
+        <div class="container">
+            <div class="success-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h1>Request Submitted Successfully!</h1>
+                <p class="success-message">Thank you for choosing Fix Smart. Your unlock request has been received and is being processed.</p>
+                
+                <div class="order-details" id="orderDetails">
+                    <!-- Order details will be populated from URL parameters -->
+                </div>
+                
+                <div class="next-steps">
+                    <h2>What Happens Next?</h2>
+                    <div class="steps-list">
+                        <div class="step-item">
+                            <div class="step-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>Payment Verification</h3>
+                                <p>We will verify your USDT transaction within 1-2 hours.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>Processing Begins</h3>
+                                <p>Our expert team will start working on your device unlock immediately after payment confirmation.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-icon">
+                                <i class="fas fa-email"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>Status Updates</h3>
+                                <p>You'll receive email updates about your order progress and completion.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-icon">
+                                <i class="fas fa-unlock-alt"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>Unlock Complete</h3>
+                                <p>Receive detailed instructions once your device is successfully unlocked (typically 24-72 hours).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-support">
+                    <h3>Need Assistance?</h3>
+                    <p>If you have any questions about your order, our support team is here to help.</p>
+                    
+                    <div class="support-options">
+                        <a href="https://wa.me/15551234567" target="_blank" class="support-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                            WhatsApp Support
+                        </a>
+                        
+                        <a href="mailto:support@fixsmart.com" class="support-btn email">
+                            <i class="fas fa-envelope"></i>
+                            Email Support
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="index.html" class="btn btn-secondary">
+                        <i class="fas fa-home"></i>
+                        Back to Home
+                    </a>
+                    
+                    <a href="service-request.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Submit Another Request
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>Fix Smart</span>
+                    <p>Professional Apple device unlocking services</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Pages</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="service-request.html">Service Request</a></li>
+                        <li><a href="guarantees.html">Guarantees</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="index.html#contact">Contact Us</a></li>
+                        <li><a href="index.html#how-it-works">How It Works</a></li>
+                        <li><a href="admin/">Admin Login</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Fix Smart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Display order details from URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            displayOrderDetails();
+            setupMobileNav();
+        });
+
+        function displayOrderDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderDetailsDiv = document.getElementById('orderDetails');
+            
+            // Get order details from URL parameters
+            const orderId = urlParams.get('order_id');
+            const deviceType = urlParams.get('device_type');
+            const deviceModel = urlParams.get('device_model');
+            const amount = urlParams.get('amount');
+            const email = urlParams.get('email');
+            
+            if (orderId || deviceType) {
+                let detailsHTML = '<h2>Order Summary</h2><div class="order-info">';
+                
+                if (orderId) {
+                    detailsHTML += `<div class="info-item"><strong>Order ID:</strong> #${orderId}</div>`;
+                }
+                
+                if (email) {
+                    detailsHTML += `<div class="info-item"><strong>Email:</strong> ${email}</div>`;
+                }
+                
+                if (deviceType) {
+                    detailsHTML += `<div class="info-item"><strong>Device Type:</strong> ${deviceType.charAt(0).toUpperCase() + deviceType.slice(1)}</div>`;
+                }
+                
+                if (deviceModel) {
+                    detailsHTML += `<div class="info-item"><strong>Device Model:</strong> ${deviceModel}</div>`;
+                }
+                
+                if (amount) {
+                    detailsHTML += `<div class="info-item"><strong>Amount:</strong> $${amount}</div>`;
+                }
+                
+                detailsHTML += '</div>';
+                orderDetailsDiv.innerHTML = detailsHTML;
+            } else {
+                orderDetailsDiv.innerHTML = '<h2>Order Confirmation</h2><p>Your order has been successfully submitted and is being processed.</p>';
+            }
+        }
+
+        function setupMobileNav() {
+            const navMobile = document.querySelector('.nav-mobile');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (navMobile) {
+                navMobile.addEventListener('click', function() {
+                    navMenu.classList.toggle('mobile-active');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

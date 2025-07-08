@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - iCloud Unlock Pro</title>
+    <title>Admin Login - Fix Smart</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="login-header">
             <i class="fas fa-shield-alt"></i>
             <h1>Admin Portal</h1>
-            <p>iCloud Unlock Pro Dashboard</p>
+            <p>Fix Smart Dashboard</p>
         </div>
 
         <?php if ($error_message): ?>

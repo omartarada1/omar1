@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guarantees - Fix Smart</title>
+    <meta name="description" content="Our service guarantees and commitment to quality for iCloud unlocking services.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>Fix Smart</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="index.html">Home</a>
+                    <a href="service-request.html">Service Request</a>
+                    <a href="guarantees.html" class="active">Guarantees</a>
+                    <a href="index.html#contact">Contact</a>
+                    <a href="admin/">Admin</a>
+                </div>
+                <div class="nav-mobile">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Guarantees Content Section -->
+    <section class="guarantees-page">
+        <div class="container">
+            <div class="page-header">
+                <h1>Our Service Guarantees</h1>
+                <p>We stand behind our work with comprehensive guarantees and commitments</p>
+            </div>
+            
+            <div class="guarantees-content" id="guaranteesContent">
+                <!-- Loading message -->
+                <div class="loading-content">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading guarantees...</p>
+                </div>
+            </div>
+            
+            <!-- Default content (fallback) -->
+            <div class="default-guarantees" style="display: none;">
+                <div class="guarantee-card">
+                    <div class="guarantee-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>100% Success Guarantee</h3>
+                    <p>We guarantee successful unlocking of your device or your money back. Our expert team has years of experience with Apple device unlocking.</p>
+                </div>
+
+                <div class="guarantee-card">
+                    <div class="guarantee-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Safe Process</h3>
+                    <p>Your device data and personal information are completely safe. Our unlocking process does not affect your device's warranty or functionality.</p>
+                </div>
+
+                <div class="guarantee-card">
+                    <div class="guarantee-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Fast Turnaround Time</h3>
+                    <p>Most unlocks are completed within 24-72 hours. We provide regular updates on your order status throughout the process.</p>
+                </div>
+
+                <div class="guarantee-card">
+                    <div class="guarantee-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>24/7 Customer Support</h3>
+                    <p>Our support team is available round the clock to assist you with any questions or concerns during the unlocking process.</p>
+                </div>
+
+                <div class="guarantee-card">
+                    <div class="guarantee-icon">
+                        <i class="fas fa-redo"></i>
+                    </div>
+                    <h3>Free Re-lock Protection</h3>
+                    <p>If your device gets locked again within 30 days of our service, we will unlock it again for free - no questions asked.</p>
+                </div>
+
+                <div class="guarantee-card">
+                    <div class="guarantee-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3>Money-Back Guarantee</h3>
+                    <p>If we cannot unlock your device, we will provide a full refund within 3-5 business days. No hidden fees or charges.</p>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="guarantees-cta">
+                <h2>Ready to Unlock Your Device?</h2>
+                <p>Join thousands of satisfied customers who trust Fix Smart for their device unlocking needs.</p>
+                <a href="service-request.html" class="btn btn-primary">
+                    <i class="fas fa-unlock-alt"></i>
+                    Start Service Request
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>Fix Smart</span>
+                    <p>Professional Apple device unlocking services</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Pages</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="service-request.html">Service Request</a></li>
+                        <li><a href="guarantees.html">Guarantees</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="index.html#contact">Contact Us</a></li>
+                        <li><a href="index.html#how-it-works">How It Works</a></li>
+                        <li><a href="admin/">Admin Login</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Fix Smart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/15551234567" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <script>
+        // Load guarantees content from API
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGuarantees();
+            setupMobileNav();
+        });
+
+        async function loadGuarantees() {
+            try {
+                const response = await fetch('php/get_guarantees.php');
+                const data = await response.json();
+                
+                const contentDiv = document.getElementById('guaranteesContent');
+                const loadingDiv = contentDiv.querySelector('.loading-content');
+                const defaultDiv = document.querySelector('.default-guarantees');
+                
+                if (data.success && data.content) {
+                    // Show custom content from admin
+                    contentDiv.innerHTML = data.content;
+                } else {
+                    // Show default content
+                    loadingDiv.style.display = 'none';
+                    defaultDiv.style.display = 'block';
+                    contentDiv.innerHTML = '';
+                    contentDiv.appendChild(defaultDiv);
+                }
+            } catch (error) {
+                console.error('Error loading guarantees:', error);
+                // Show default content on error
+                const contentDiv = document.getElementById('guaranteesContent');
+                const loadingDiv = contentDiv.querySelector('.loading-content');
+                const defaultDiv = document.querySelector('.default-guarantees');
+                
+                loadingDiv.style.display = 'none';
+                defaultDiv.style.display = 'block';
+                contentDiv.innerHTML = '';
+                contentDiv.appendChild(defaultDiv);
+            }
+        }
+
+        function setupMobileNav() {
+            const navMobile = document.querySelector('.nav-mobile');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (navMobile) {
+                navMobile.addEventListener('click', function() {
+                    navMenu.classList.toggle('mobile-active');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

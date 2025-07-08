@@ -76,6 +76,101 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $message_type = 'error';
             }
             break;
+            
+        case 'add_device_version':
+            try {
+                $device_type = $_POST['device_type'];
+                $name = trim($_POST['name']);
+                $price = (float) $_POST['price'];
+                $sort_order = (int) $_POST['sort_order'];
+                
+                $stmt = $db->prepare("INSERT INTO device_versions (device_type, name, price, sort_order) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$device_type, $name, $price, $sort_order]);
+                
+                $message = 'Device version added successfully!';
+                $message_type = 'success';
+            } catch (Exception $e) {
+                $message = 'Error adding device version: ' . $e->getMessage();
+                $message_type = 'error';
+            }
+            break;
+            
+        case 'update_device_version':
+            try {
+                $version_id = (int) $_POST['version_id'];
+                $name = trim($_POST['name']);
+                $price = (float) $_POST['price'];
+                $sort_order = (int) $_POST['sort_order'];
+                $is_active = isset($_POST['is_active']) ? 1 : 0;
+                
+                $stmt = $db->prepare("UPDATE device_versions SET name = ?, price = ?, sort_order = ?, is_active = ? WHERE id = ?");
+                $stmt->execute([$name, $price, $sort_order, $is_active, $version_id]);
+                
+                $message = 'Device version updated successfully!';
+                $message_type = 'success';
+            } catch (Exception $e) {
+                $message = 'Error updating device version: ' . $e->getMessage();
+                $message_type = 'error';
+            }
+            break;
+            
+        case 'delete_device_version':
+            try {
+                $version_id = (int) $_POST['version_id'];
+                
+                $stmt = $db->prepare("DELETE FROM device_versions WHERE id = ?");
+                $stmt->execute([$version_id]);
+                
+                $message = 'Device version deleted successfully!';
+                $message_type = 'success';
+            } catch (Exception $e) {
+                $message = 'Error deleting device version: ' . $e->getMessage();
+                $message_type = 'error';
+            }
+            break;
+            
+        case 'update_guarantees':
+            try {
+                $content = $_POST['guarantees_content'];
+                
+                $stmt = $db->prepare("UPDATE guarantees_content SET content = ? WHERE id = 1");
+                $stmt->execute([$content]);
+                
+                if ($stmt->rowCount() == 0) {
+                    // Insert if no record exists
+                    $stmt = $db->prepare("INSERT INTO guarantees_content (id, content) VALUES (1, ?)");
+                    $stmt->execute([$content]);
+                }
+                
+                $message = 'Guarantees content updated successfully!';
+                $message_type = 'success';
+            } catch (Exception $e) {
+                $message = 'Error updating guarantees content: ' . $e->getMessage();
+                $message_type = 'error';
+            }
+            break;
+            
+        case 'update_website_text':
+            try {
+                $text_key = $_POST['text_key'];
+                $text_value = $_POST['text_value'];
+                
+                $stmt = $db->prepare("UPDATE website_texts SET text_value = ? WHERE text_key = ?");
+                $stmt->execute([$text_value, $text_key]);
+                
+                if ($stmt->rowCount() == 0) {
+                    // Insert if no record exists
+                    $stmt = $db->prepare("INSERT INTO website_texts (text_key, text_value) VALUES (?, ?)");
+                    $stmt->execute([$text_key, $text_value]);
+                }
+                
+                $message = 'Website text updated successfully!';
+                $message_type = 'success';
+            } catch (Exception $e) {
+                $message = 'Error updating website text: ' . $e->getMessage();
+                $message_type = 'error';
+            }
+            break;
     }
 }
 
@@ -129,13 +224,30 @@ while ($row = $stmt->fetch()) {
         $wallets['erc20'] = $row['setting_value'];
     }
 }
+
+// Get device versions
+$stmt = $db->query("
+    SELECT id, device_type, name, price, is_active, sort_order 
+    FROM device_versions 
+    ORDER BY device_type, sort_order ASC, name ASC
+");
+$device_versions = $stmt->fetchAll();
+
+// Get guarantees content
+$stmt = $db->query("SELECT content FROM guarantees_content WHERE id = 1");
+$guarantees_result = $stmt->fetch();
+$guarantees_content = $guarantees_result['content'] ?? '';
+
+// Get website texts
+$stmt = $db->query("SELECT text_key, text_value, description FROM website_texts ORDER BY text_key");
+$website_texts = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - iCloud Unlock Pro</title>
+    <title>Admin Dashboard - Fix Smart</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -450,11 +562,20 @@ while ($row = $stmt->fetch()) {
             <div class="nav-item" data-section="requests">
                 <i class="fas fa-list"></i> Unlock Requests
             </div>
+            <div class="nav-item" data-section="device-versions">
+                <i class="fas fa-mobile-alt"></i> Device Versions
+            </div>
             <div class="nav-item" data-section="pricing">
                 <i class="fas fa-dollar-sign"></i> Pricing Management
             </div>
             <div class="nav-item" data-section="wallets">
                 <i class="fab fa-bitcoin"></i> Wallet Addresses
+            </div>
+            <div class="nav-item" data-section="guarantees">
+                <i class="fas fa-shield-alt"></i> Guarantees
+            </div>
+            <div class="nav-item" data-section="website-texts">
+                <i class="fas fa-edit"></i> Website Texts
             </div>
             <div class="nav-item" data-section="settings">
                 <i class="fas fa-cog"></i> Settings
@@ -649,6 +770,145 @@ while ($row = $stmt->fetch()) {
             </div>
         </div>
 
+        <!-- Device Versions Section -->
+        <div class="content-section" id="device-versions">
+            <div class="section-header">
+                <h2>Device Versions Management</h2>
+            </div>
+            <div class="section-content">
+                <!-- Add New Device Version Form -->
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                    <h3>Add New Device Version</h3>
+                    <form method="POST" action="">
+                        <input type="hidden" name="action" value="add_device_version">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="device_type">Device Type</label>
+                                <select id="device_type" name="device_type" required>
+                                    <option value="iphone">iPhone</option>
+                                    <option value="ipad">iPad</option>
+                                    <option value="mac">Mac</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="version_name">Model Name</label>
+                                <input type="text" id="version_name" name="name" placeholder="e.g., iPhone 15 Pro Max" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="version_price">Price ($)</label>
+                                <input type="number" step="0.01" id="version_price" name="price" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sort_order">Sort Order</label>
+                                <input type="number" id="sort_order" name="sort_order" value="0">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Add Device Version
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Device Versions List -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Device Type</th>
+                            <th>Model Name</th>
+                            <th>Price</th>
+                            <th>Sort Order</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($device_versions as $version): ?>
+                        <tr>
+                            <td><?php echo $version['id']; ?></td>
+                            <td><?php echo ucfirst($version['device_type']); ?></td>
+                            <td><?php echo htmlspecialchars($version['name']); ?></td>
+                            <td>$<?php echo number_format($version['price'], 2); ?></td>
+                            <td><?php echo $version['sort_order']; ?></td>
+                            <td>
+                                <span class="status-badge <?php echo $version['is_active'] ? 'status-paid' : 'status-pending'; ?>">
+                                    <?php echo $version['is_active'] ? 'Active' : 'Inactive'; ?>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="btn btn-primary btn-sm" onclick="editDeviceVersion(<?php echo htmlspecialchars(json_encode($version)); ?>)">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm" style="background: #e74c3c; color: white;" onclick="deleteDeviceVersion(<?php echo $version['id']; ?>)">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Guarantees Section -->
+        <div class="content-section" id="guarantees">
+            <div class="section-header">
+                <h2>Guarantees Content Management</h2>
+            </div>
+            <div class="section-content">
+                <p>Edit the content that appears on the Guarantees page. You can use HTML for formatting.</p>
+                <form method="POST" action="">
+                    <input type="hidden" name="action" value="update_guarantees">
+                    <div class="form-group">
+                        <label for="guarantees_content">Guarantees Content (HTML allowed)</label>
+                        <textarea id="guarantees_content" name="guarantees_content" rows="15" style="width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 6px; font-family: monospace;"><?php echo htmlspecialchars($guarantees_content); ?></textarea>
+                        <small>Leave empty to show default guarantees. You can use HTML tags for formatting.</small>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Update Guarantees Content
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Website Texts Section -->
+        <div class="content-section" id="website-texts">
+            <div class="section-header">
+                <h2>Website Texts Management</h2>
+            </div>
+            <div class="section-content">
+                <p>Manage editable texts throughout the website.</p>
+                
+                <?php foreach ($website_texts as $text): ?>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                    <form method="POST" action="" style="margin: 0;">
+                        <input type="hidden" name="action" value="update_website_text">
+                        <input type="hidden" name="text_key" value="<?php echo htmlspecialchars($text['text_key']); ?>">
+                        
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label><strong><?php echo htmlspecialchars($text['text_key']); ?></strong></label>
+                            <?php if ($text['description']): ?>
+                                <small style="display: block; color: #666; margin-bottom: 0.5rem;"><?php echo htmlspecialchars($text['description']); ?></small>
+                            <?php endif; ?>
+                            
+                            <?php if (strlen($text['text_value']) > 100): ?>
+                                <textarea name="text_value" rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"><?php echo htmlspecialchars($text['text_value']); ?></textarea>
+                            <?php else: ?>
+                                <input type="text" name="text_value" value="<?php echo htmlspecialchars($text['text_value']); ?>" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            <?php endif; ?>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-save"></i> Update
+                        </button>
+                    </form>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
         <!-- Settings Section -->
         <div class="content-section" id="settings">
             <div class="section-header">
@@ -744,6 +1004,76 @@ while ($row = $stmt->fetch()) {
         document.getElementById('editModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeEditModal();
+            }
+        });
+
+        // Device version management functions
+        function editDeviceVersion(version) {
+            const modalHtml = `
+                <div id="deviceVersionModal" style="display: flex; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px;">
+                        <h3>Edit Device Version</h3>
+                        <form method="POST" action="">
+                            <input type="hidden" name="action" value="update_device_version">
+                            <input type="hidden" name="version_id" value="${version.id}">
+                            <div class="form-group">
+                                <label>Device Type</label>
+                                <select name="device_type" disabled style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px;">
+                                    <option value="${version.device_type}" selected>${version.device_type.charAt(0).toUpperCase() + version.device_type.slice(1)}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Model Name</label>
+                                <input type="text" name="name" value="${version.name}" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Price ($)</label>
+                                <input type="number" step="0.01" name="price" value="${version.price}" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px;">
+                            </div>
+                            <div class="form-group">
+                                <label>Sort Order</label>
+                                <input type="number" name="sort_order" value="${version.sort_order}" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 6px;">
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="is_active" ${version.is_active ? 'checked' : ''}> Active
+                                </label>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" class="btn btn-success">Update</button>
+                                <button type="button" class="btn btn-primary" onclick="closeDeviceVersionModal()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        function closeDeviceVersionModal() {
+            const modal = document.getElementById('deviceVersionModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function deleteDeviceVersion(versionId) {
+            if (confirm('Are you sure you want to delete this device version?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.innerHTML = `
+                    <input type="hidden" name="action" value="delete_device_version">
+                    <input type="hidden" name="version_id" value="${versionId}">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Close device version modal when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'deviceVersionModal') {
+                closeDeviceVersionModal();
             }
         });
     </script>
