@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iCloud Unlock Pro - Professional iPhone, iPad & Mac Unlocking Service</title>
+    <meta name="description" content="Professional iCloud unlocking service for iPhone, iPad, and Mac devices. Fast, secure, and reliable unlocking solutions.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>iCloud Unlock Pro</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#services">Services</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="nav-mobile">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Professional iCloud Unlocking Service</h1>
+                <p>Fast, secure, and reliable iCloud removal for iPhone, iPad, and Mac devices. Get your device unlocked by professionals with years of experience.</p>
+                <div class="hero-features">
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>100% Secure</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-clock"></i>
+                        <span>24-48 Hours</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Guaranteed Results</span>
+                    </div>
+                </div>
+                <a href="#unlock-form" class="btn btn-primary">Start Unlocking Process</a>
+            </div>
+            <div class="hero-image">
+                <div class="device-showcase">
+                    <i class="fab fa-apple"></i>
+                    <div class="devices">
+                        <i class="fas fa-mobile-alt"></i>
+                        <i class="fas fa-tablet-alt"></i>
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Supported Devices</h2>
+            <p class="section-subtitle">We support all Apple devices with professional unlocking services</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>iPhone Unlocking</h3>
+                    <p>Complete iCloud removal for all iPhone models from iPhone 5s to iPhone 15 Pro Max</p>
+                    <ul>
+                        <li>All iOS versions supported</li>
+                        <li>Find My iPhone removal</li>
+                        <li>Activation lock bypass</li>
+                        <li>Clean IMEI check</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-tablet-alt"></i>
+                    <h3>iPad Unlocking</h3>
+                    <p>Professional iPad iCloud unlocking for all models and generations</p>
+                    <ul>
+                        <li>iPad Pro, Air, Mini</li>
+                        <li>All iPadOS versions</li>
+                        <li>Cellular and WiFi models</li>
+                        <li>MDM removal available</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Mac Unlocking</h3>
+                    <p>MacBook and iMac iCloud account removal and firmware unlocking</p>
+                    <ul>
+                        <li>MacBook Pro, Air, iMac</li>
+                        <li>T2 and M1/M2 chip support</li>
+                        <li>Firmware password removal</li>
+                        <li>EFI unlock service</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2>Transparent Pricing</h2>
+            <p class="section-subtitle">Choose the right plan for your device</p>
+            <div class="pricing-grid">
+                <div class="pricing-card" data-device="iphone">
+                    <div class="pricing-header">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>iPhone Unlock</h3>
+                        <div class="price">$<span id="iphone-price">89</span></div>
+                        <span class="price-note">per device</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> All iPhone models</li>
+                        <li><i class="fas fa-check"></i> 24-48 hours delivery</li>
+                        <li><i class="fas fa-check"></i> Money-back guarantee</li>
+                        <li><i class="fas fa-check"></i> 24/7 support</li>
+                    </ul>
+                </div>
+                <div class="pricing-card popular" data-device="ipad">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <i class="fas fa-tablet-alt"></i>
+                        <h3>iPad Unlock</h3>
+                        <div class="price">$<span id="ipad-price">79</span></div>
+                        <span class="price-note">per device</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> All iPad models</li>
+                        <li><i class="fas fa-check"></i> 24-48 hours delivery</li>
+                        <li><i class="fas fa-check"></i> Money-back guarantee</li>
+                        <li><i class="fas fa-check"></i> Priority support</li>
+                    </ul>
+                </div>
+                <div class="pricing-card" data-device="mac">
+                    <div class="pricing-header">
+                        <i class="fas fa-laptop"></i>
+                        <h3>Mac Unlock</h3>
+                        <div class="price">$<span id="mac-price">149</span></div>
+                        <span class="price-note">per device</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> MacBook & iMac</li>
+                        <li><i class="fas fa-check"></i> 48-72 hours delivery</li>
+                        <li><i class="fas fa-check"></i> Money-back guarantee</li>
+                        <li><i class="fas fa-check"></i> Expert support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <p class="section-subtitle">Simple 4-step process to unlock your device</p>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Submit Request</h3>
+                    <p>Fill out the form with your device details and IMEI/Serial number</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Make Payment</h3>
+                    <p>Choose your preferred payment method and complete the transaction</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Processing</h3>
+                    <p>Our experts begin working on your device unlock immediately</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Get Results</h3>
+                    <p>Receive detailed instructions and confirmation of successful unlock</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unlock Form Section -->
+    <section id="unlock-form" class="unlock-form">
+        <div class="container">
+            <h2>Start Your Unlock Request</h2>
+            <p class="section-subtitle">Fill out the form below to begin the unlocking process</p>
+            
+            <form id="unlockForm" class="form">
+                <div class="form-group">
+                    <label for="deviceType">Device Type *</label>
+                    <select id="deviceType" name="deviceType" required>
+                        <option value="">Select Device Type</option>
+                        <option value="iphone">iPhone</option>
+                        <option value="ipad">iPad</option>
+                        <option value="mac">Mac</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="imeiSerial">IMEI or Serial Number *</label>
+                    <input type="text" id="imeiSerial" name="imeiSerial" required placeholder="Enter IMEI or Serial Number">
+                    <small>For iPhone/iPad: Settings → General → About. For Mac: Apple Menu → About This Mac</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Additional Details (Optional)</label>
+                    <textarea id="description" name="description" placeholder="Any additional information about your device or specific requirements"></textarea>
+                </div>
+
+                <div class="pricing-summary">
+                    <div class="summary-item">
+                        <span>Service:</span>
+                        <span id="selectedService">Please select a device type</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total:</span>
+                        <span id="totalPrice">$0</span>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <h3>Choose Payment Method</h3>
+                    <div class="payment-options">
+                        <div class="payment-option" data-method="card">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Credit Card</span>
+                        </div>
+                        <div class="payment-option" data-method="paypal">
+                            <i class="fab fa-paypal"></i>
+                            <span>PayPal</span>
+                        </div>
+                        <div class="payment-option" data-method="usdt">
+                            <i class="fab fa-bitcoin"></i>
+                            <span>USDT (TRC20/ERC20)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Credit Card Payment Form -->
+                <div id="cardPayment" class="payment-form" style="display: none;">
+                    <div class="form-group">
+                        <label>Card Information</label>
+                        <div id="card-element"></div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+                </div>
+
+                <!-- PayPal Payment -->
+                <div id="paypalPayment" class="payment-form" style="display: none;">
+                    <div id="paypal-button-container"></div>
+                </div>
+
+                <!-- USDT Payment -->
+                <div id="usdtPayment" class="payment-form" style="display: none;">
+                    <div class="usdt-info">
+                        <h4>USDT Payment Information</h4>
+                        <p>Send the exact amount to one of the following addresses:</p>
+                        
+                        <div class="wallet-address">
+                            <strong>TRC20 (Tron):</strong>
+                            <div class="address-container">
+                                <span id="trc20Address">TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE</span>
+                                <button type="button" class="copy-btn" onclick="copyAddress('trc20')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="wallet-address">
+                            <strong>ERC20 (Ethereum):</strong>
+                            <div class="address-container">
+                                <span id="erc20Address">0x1234567890123456789012345678901234567890</span>
+                                <button type="button" class="copy-btn" onclick="copyAddress('erc20')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="txHash">Transaction Hash *</label>
+                            <input type="text" id="txHash" name="txHash" placeholder="Enter transaction hash after sending USDT">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large" id="submitBtn">
+                    <i class="fas fa-lock-open"></i>
+                    Process Unlock Request
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Need Help?</h2>
+            <p class="section-subtitle">Our support team is here to assist you 24/7</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email Support</h3>
+                    <p>support@icloudunlockpro.com</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>WhatsApp</h3>
+                    <p>+1 (555) 123-4567</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <h3>Response Time</h3>
+                    <p>Within 1 hour</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>iCloud Unlock Pro</span>
+                    <p>Professional Apple device unlocking services</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">iPhone Unlock</a></li>
+                        <li><a href="#services">iPad Unlock</a></li>
+                        <li><a href="#services">Mac Unlock</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="admin/">Admin Login</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 iCloud Unlock Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/15551234567" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing your request...</p>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
