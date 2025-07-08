@@ -16,17 +16,18 @@ try {
     }
 
     // Get wallet addresses from settings
-    $stmt = $db->prepare("
+    $stmt = $db->query("
         SELECT setting_key, setting_value 
         FROM settings 
         WHERE setting_key IN ('usdt_trc20_address', 'usdt_erc20_address')
     ");
-    $stmt->execute();
-    $results = $stmt->fetchAll();
-
-    // Format wallet data
-    $wallets = [];
-    foreach ($results as $row) {
+    
+    $wallets = [
+        'trc20' => 'TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE', // Default TRC20 address
+        'erc20' => '0x1234567890123456789012345678901234567890' // Default ERC20 address
+    ];
+    
+    while ($row = $stmt->fetch()) {
         if ($row['setting_key'] === 'usdt_trc20_address') {
             $wallets['trc20'] = $row['setting_value'];
         } elseif ($row['setting_key'] === 'usdt_erc20_address') {
@@ -34,15 +35,6 @@ try {
         }
     }
 
-    // Provide default values if not set
-    if (!isset($wallets['trc20'])) {
-        $wallets['trc20'] = 'TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE';
-    }
-    if (!isset($wallets['erc20'])) {
-        $wallets['erc20'] = '0x1234567890123456789012345678901234567890';
-    }
-
-    // Return wallet data
     echo json_encode([
         'success' => true,
         'wallets' => $wallets
@@ -54,7 +46,11 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Failed to fetch wallet addresses'
+        'message' => 'Failed to load wallet addresses',
+        'wallets' => [
+            'trc20' => 'TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE', // Fallback address
+            'erc20' => '0x1234567890123456789012345678901234567890'
+        ]
     ]);
 }
 ?>

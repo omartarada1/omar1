@@ -173,6 +173,7 @@
             const deviceModel = urlParams.get('device_model');
             const amount = urlParams.get('amount');
             const email = urlParams.get('email');
+            const paymentMethod = urlParams.get('payment_method');
             
             if (orderId || deviceType) {
                 let detailsHTML = '<h2>Order Summary</h2><div class="order-info">';
@@ -197,10 +198,38 @@
                     detailsHTML += `<div class="info-item"><strong>Amount:</strong> $${amount}</div>`;
                 }
                 
+                if (paymentMethod) {
+                    let paymentDisplay = paymentMethod;
+                    if (paymentMethod === 'card') paymentDisplay = 'Credit Card';
+                    else if (paymentMethod === 'paypal') paymentDisplay = 'PayPal';
+                    else if (paymentMethod === 'usdt') paymentDisplay = 'USDT Cryptocurrency';
+                    
+                    detailsHTML += `<div class="info-item"><strong>Payment Method:</strong> ${paymentDisplay}</div>`;
+                }
+                
                 detailsHTML += '</div>';
                 orderDetailsDiv.innerHTML = detailsHTML;
+                
+                // Update next steps based on payment method
+                updateNextSteps(paymentMethod);
             } else {
                 orderDetailsDiv.innerHTML = '<h2>Order Confirmation</h2><p>Your order has been successfully submitted and is being processed.</p>';
+            }
+        }
+
+        function updateNextSteps(paymentMethod) {
+            const verificationStep = document.querySelector('.step-item:first-child .step-content');
+            
+            if (paymentMethod === 'usdt') {
+                verificationStep.innerHTML = `
+                    <h3>Payment Verification</h3>
+                    <p>We will verify your USDT transaction within 1-2 hours.</p>
+                `;
+            } else if (paymentMethod === 'card' || paymentMethod === 'paypal') {
+                verificationStep.innerHTML = `
+                    <h3>Payment Confirmed</h3>
+                    <p>Your payment has been processed successfully and confirmed.</p>
+                `;
             }
         }
 

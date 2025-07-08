@@ -1,8 +1,11 @@
-// Service Request Page JavaScript
+// Service Request Page JavaScript - Updated with Multiple Payment Methods
 let selectedDevice = null;
 let selectedVersion = null;
 let currentPrice = 0;
 let usdtWalletAddress = '';
+let selectedPaymentMethod = null;
+let stripe = null;
+let cardElement = null;
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
@@ -10,7 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializePage() {
+    // Initialize Stripe
+    stripe = Stripe('pk_test_51HY0PxLOAk9r4fq4qf9mN8MbD7fYLZ8Z9V8Y9nY9M8Z9Y8M9Z8Y9M8Z9Y8M9Z8Y9M8Z9Y8M9Z8Y9M8Z9Y8M9Z8Y9M8Z9Y8M');
+    
     setupEventListeners();
+    setupPaymentMethods();
     loadWalletAddress();
     setupMobileNavigation();
 }
@@ -27,6 +34,13 @@ function setupEventListeners() {
     if (serviceForm) {
         serviceForm.addEventListener('submit', handleFormSubmission);
     }
+
+    // Payment method selection
+    document.querySelectorAll('.payment-option').forEach(option => {
+        option.addEventListener('click', function() {
+            selectPaymentMethod(this.dataset.method);
+        });
+    });
 }
 
 function setupMobileNavigation() {
@@ -37,6 +51,98 @@ function setupMobileNavigation() {
         navMobile.addEventListener('click', function() {
             navMenu.classList.toggle('mobile-active');
         });
+    }
+}
+
+function setupPaymentMethods() {
+    // Setup Stripe Card Element
+    if (stripe) {
+        const elements = stripe.elements();
+        cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#424770',
+                    '::placeholder': {
+                        color: '#aab7c4',
+                    },
+                },
+            },
+        });
+        
+        cardElement.mount('#card-element');
+        
+        cardElement.on('change', function(event) {
+            const displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+    }
+}
+
+function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+    
+    // Remove active class from all options
+    document.querySelectorAll('.payment-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    // Add active class to selected option
+    document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+    
+    // Hide all payment forms
+    document.querySelectorAll('.payment-form').forEach(form => {
+        form.style.display = 'none';
+    });
+    
+    // Show selected payment form
+    if (method === 'card') {
+        document.getElementById('cardPayment').style.display = 'block';
+    } else if (method === 'paypal') {
+        document.getElementById('paypalPayment').style.display = 'block';
+        initializePayPal();
+    } else if (method === 'usdt') {
+        document.getElementById('usdtPayment').style.display = 'block';
+        generateQRCode();
+    }
+}
+
+function initializePayPal() {
+    // Clear any existing PayPal buttons
+    document.getElementById('paypal-button-container').innerHTML = '';
+    
+    if (typeof paypal !== 'undefined' && currentPrice > 0) {
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: currentPrice.toFixed(2)
+                        },
+                        description: `Fix Smart - ${selectedDevice} ${selectedVersion} Unlock Service`
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    // Process the payment
+                    processPayment('paypal', {
+                        orderID: data.orderID,
+                        payerID: data.payerID,
+                        paymentID: details.id,
+                        payer: details.payer
+                    });
+                });
+            },
+            onError: function(err) {
+                console.error('PayPal error:', err);
+                showNotification('PayPal payment failed. Please try again.', 'error');
+            }
+        }).render('#paypal-button-container');
     }
 }
 
@@ -66,10 +172,11 @@ async function handleDeviceTypeChange() {
         const response = await fetch(`php/get_device_versions.php?device_type=${deviceType}`);
         const data = await response.json();
         
-        if (data.success && data.versions.length > 0) {
+        if (data.success && data.versions && data.versions.length > 0) {
             renderDeviceVersions(data.versions);
         } else {
-            versionsList.innerHTML = '<p>No versions available for this device type.</p>';
+            // Fallback to default versions
+            renderDefaultVersions(deviceType);
         }
     } catch (error) {
         console.error('Error loading device versions:', error);
@@ -83,10 +190,10 @@ function renderDeviceVersions(versions) {
     const versionsList = document.getElementById('versionsList');
     
     let html = '';
-    versions.forEach(version => {
+    versions.forEach((version, index) => {
         html += `
             <div class="version-item" data-version="${version.name}" data-price="${version.price}" onclick="selectVersion('${version.name}', ${version.price})">
-                <input type="radio" name="deviceVersion" value="${version.name}" id="version_${version.id}">
+                <input type="radio" name="deviceVersion" value="${version.name}" id="version_${index}">
                 <div class="version-info">
                     <div class="version-name">${version.name}</div>
                     <div class="version-price">$${parseFloat(version.price).toFixed(2)}</div>
@@ -199,9 +306,10 @@ function showPaymentSection() {
     const usdtAmountSpan = document.getElementById('usdtAmount');
     
     if (currentPrice > 0) {
-        usdtAmountSpan.textContent = `${currentPrice.toFixed(2)}`;
+        if (usdtAmountSpan) {
+            usdtAmountSpan.textContent = `${currentPrice.toFixed(2)}`;
+        }
         paymentSection.style.display = 'block';
-        generateQRCode();
     }
 }
 
@@ -216,9 +324,12 @@ async function loadWalletAddress() {
         const response = await fetch('php/get_wallets.php');
         const data = await response.json();
         
-        if (data.success && data.wallets.trc20) {
+        if (data.success && data.wallets && data.wallets.trc20) {
             usdtWalletAddress = data.wallets.trc20;
-            document.getElementById('usdtWalletAddress').textContent = usdtWalletAddress;
+            const addressElement = document.getElementById('usdtWalletAddress');
+            if (addressElement) {
+                addressElement.textContent = usdtWalletAddress;
+            }
             generateQRCode();
         }
     } catch (error) {
@@ -228,11 +339,11 @@ async function loadWalletAddress() {
     }
 }
 
-// Generate QR Code (simple implementation)
+// Generate QR Code
 function generateQRCode() {
     const qrContainer = document.getElementById('qrCodeDisplay');
     
-    if (usdtWalletAddress && currentPrice > 0) {
+    if (qrContainer && usdtWalletAddress) {
         // Create QR code URL using QR Server API
         const qrData = usdtWalletAddress;
         const qrSize = '150x150';
@@ -244,7 +355,10 @@ function generateQRCode() {
 
 // Copy wallet address to clipboard
 function copyWalletAddress() {
-    const address = document.getElementById('usdtWalletAddress').textContent;
+    const addressElement = document.getElementById('usdtWalletAddress');
+    if (!addressElement) return;
+    
+    const address = addressElement.textContent;
     
     if (navigator.clipboard) {
         navigator.clipboard.writeText(address).then(() => {
@@ -292,9 +406,63 @@ async function handleFormSubmission(e) {
     showLoading(true);
     
     try {
+        if (selectedPaymentMethod === 'card') {
+            await processStripePayment();
+        } else if (selectedPaymentMethod === 'usdt') {
+            await processUSDTPayment();
+        } else {
+            showNotification('Please select a payment method.', 'error');
+            showLoading(false);
+        }
+    } catch (error) {
+        console.error('Payment processing error:', error);
+        showNotification('An error occurred while processing your payment. Please try again.', 'error');
+        showLoading(false);
+    }
+}
+
+// Process Stripe payment
+async function processStripePayment() {
+    const { token, error } = await stripe.createToken(cardElement);
+    
+    if (error) {
+        showNotification(error.message, 'error');
+        showLoading(false);
+        return;
+    }
+    
+    // Process payment with token
+    processPayment('card', {
+        token: token.id,
+        last4: token.card.last4,
+        brand: token.card.brand
+    });
+}
+
+// Process USDT payment
+async function processUSDTPayment() {
+    const transactionHash = document.getElementById('transactionHash').value.trim();
+    
+    if (!transactionHash) {
+        showNotification('Please enter the transaction hash.', 'error');
+        showLoading(false);
+        return;
+    }
+    
+    processPayment('usdt', {
+        transactionHash: transactionHash,
+        walletAddress: usdtWalletAddress
+    });
+}
+
+// Process payment (unified function)
+async function processPayment(paymentMethod, paymentData) {
+    try {
         const formData = collectFormData();
+        formData.paymentMethod = paymentMethod;
+        formData.paymentData = paymentData;
         
-        const response = await fetch('php/submit_service_request.php', {
+        const response = await fetch('php/process_payment.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -311,17 +479,18 @@ async function handleFormSubmission(e) {
                 device_type: selectedDevice,
                 device_model: selectedVersion,
                 amount: currentPrice,
-                email: formData.customerEmail
+                email: formData.customerEmail,
+                payment_method: paymentMethod
             });
             
             window.location.href = `payment-success.html?${params.toString()}`;
         } else {
-            showNotification(result.message || 'An error occurred while submitting your request.', 'error');
+            showNotification(result.message || 'Payment processing failed. Please try again.', 'error');
+            showLoading(false);
         }
     } catch (error) {
-        console.error('Submission error:', error);
-        showNotification('An error occurred while submitting your request. Please try again.', 'error');
-    } finally {
+        console.error('Payment processing error:', error);
+        showNotification('An error occurred while processing your payment. Please try again.', 'error');
         showLoading(false);
     }
 }
@@ -330,7 +499,6 @@ async function handleFormSubmission(e) {
 function validateForm() {
     const customerEmail = document.getElementById('customerEmail').value.trim();
     const imeiSerial = document.getElementById('imeiSerial').value.trim();
-    const transactionHash = document.getElementById('transactionHash').value.trim();
     
     if (!customerEmail || !isValidEmail(customerEmail)) {
         showNotification('Please enter a valid email address.', 'error');
@@ -352,9 +520,17 @@ function validateForm() {
         return false;
     }
     
-    if (!transactionHash) {
-        showNotification('Please enter the transaction hash.', 'error');
+    if (!selectedPaymentMethod) {
+        showNotification('Please select a payment method.', 'error');
         return false;
+    }
+    
+    if (selectedPaymentMethod === 'usdt') {
+        const transactionHash = document.getElementById('transactionHash').value.trim();
+        if (!transactionHash) {
+            showNotification('Please enter the transaction hash.', 'error');
+            return false;
+        }
     }
     
     return true;
@@ -368,9 +544,7 @@ function collectFormData() {
         deviceVersion: selectedVersion,
         imeiSerial: document.getElementById('imeiSerial').value.trim(),
         description: document.getElementById('description').value.trim(),
-        transactionHash: document.getElementById('transactionHash').value.trim(),
-        amount: currentPrice,
-        walletAddress: usdtWalletAddress
+        amount: currentPrice
     };
 }
 

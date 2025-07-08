@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R&currency=USD"></script>
 </head>
 <body>
     <!-- Header -->
@@ -107,49 +109,91 @@
                 <!-- Payment Section -->
                 <div id="paymentSection" class="payment-section" style="display: none;">
                     <h2>Payment Information</h2>
-                    <p class="payment-note">We only accept USDT (Tether) cryptocurrency payments for security and convenience.</p>
+                    <p class="payment-note">Choose your preferred payment method below.</p>
                     
-                    <div class="usdt-payment-info">
-                        <div class="wallet-info">
-                            <h3>Send USDT to the following address:</h3>
-                            
-                            <div class="wallet-address-container">
-                                <div class="wallet-details">
-                                    <strong>USDT Wallet Address:</strong>
-                                    <div class="address-display">
-                                        <span id="usdtWalletAddress">TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE</span>
-                                        <button type="button" class="copy-btn" onclick="copyWalletAddress()">
-                                            <i class="fas fa-copy"></i> Copy
-                                        </button>
+                    <!-- Payment Method Selection -->
+                    <div class="payment-methods">
+                        <h3>Select Payment Method</h3>
+                        <div class="payment-options">
+                            <div class="payment-option" data-method="card">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit Card</span>
+                                <small>Visa, MasterCard, American Express</small>
+                            </div>
+                            <div class="payment-option" data-method="paypal">
+                                <i class="fab fa-paypal"></i>
+                                <span>PayPal</span>
+                                <small>Pay with your PayPal account</small>
+                            </div>
+                            <div class="payment-option" data-method="usdt">
+                                <i class="fab fa-bitcoin"></i>
+                                <span>USDT (Crypto)</span>
+                                <small>Pay with USDT cryptocurrency</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Credit Card Payment Form -->
+                    <div id="cardPayment" class="payment-form" style="display: none;">
+                        <h4>Credit Card Payment</h4>
+                        <div class="form-group">
+                            <label for="card-element">Card Information</label>
+                            <div id="card-element">
+                                <!-- Stripe Elements will create form elements here -->
+                            </div>
+                            <div id="card-errors" role="alert"></div>
+                        </div>
+                    </div>
+
+                    <!-- PayPal Payment -->
+                    <div id="paypalPayment" class="payment-form" style="display: none;">
+                        <h4>PayPal Payment</h4>
+                        <div id="paypal-button-container"></div>
+                    </div>
+
+                    <!-- USDT Payment -->
+                    <div id="usdtPayment" class="payment-form" style="display: none;">
+                        <h4>USDT Cryptocurrency Payment</h4>
+                        <div class="usdt-payment-info">
+                            <div class="wallet-info">
+                                <div class="wallet-address-container">
+                                    <div class="wallet-details">
+                                        <strong>USDT Wallet Address:</strong>
+                                        <div class="address-display">
+                                            <span id="usdtWalletAddress">TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE</span>
+                                            <button type="button" class="copy-btn" onclick="copyWalletAddress()">
+                                                <i class="fas fa-copy"></i> Copy
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div class="qr-code-container">
-                                    <div class="qr-code" id="qrCodeDisplay">
-                                        <!-- QR Code will be generated here -->
-                                        <div class="qr-placeholder">
-                                            <i class="fas fa-qrcode"></i>
-                                            <p>QR Code</p>
+                                    
+                                    <div class="qr-code-container">
+                                        <div class="qr-code" id="qrCodeDisplay">
+                                            <!-- QR Code will be generated here -->
+                                            <div class="qr-placeholder">
+                                                <i class="fas fa-qrcode"></i>
+                                                <p>QR Code</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <div class="payment-instructions">
+                                    <h4>Payment Instructions:</h4>
+                                    <ol>
+                                        <li>Copy the wallet address above or scan the QR code</li>
+                                        <li>Send the exact amount of <strong id="usdtAmount">0</strong> USDT to this address</li>
+                                        <li>Copy and paste the transaction hash below</li>
+                                        <li>Submit the form to complete your order</li>
+                                    </ol>
+                                </div>
                             </div>
-                            
-                            <div class="payment-instructions">
-                                <h4>Payment Instructions:</h4>
-                                <ol>
-                                    <li>Copy the wallet address above or scan the QR code</li>
-                                    <li>Send the exact amount of <strong id="usdtAmount">0</strong> USDT to this address</li>
-                                    <li>Copy and paste the transaction hash below</li>
-                                    <li>Submit the form to complete your order</li>
-                                </ol>
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="transactionHash">Transaction Hash *</label>
-                            <input type="text" id="transactionHash" name="transactionHash" required placeholder="Enter transaction hash after sending USDT">
-                            <small>This is the unique ID of your USDT transaction. You can find it in your wallet or exchange.</small>
+                            <div class="form-group">
+                                <label for="transactionHash">Transaction Hash *</label>
+                                <input type="text" id="transactionHash" name="transactionHash" placeholder="Enter transaction hash after sending USDT">
+                                <small>This is the unique ID of your USDT transaction. You can find it in your wallet or exchange.</small>
+                            </div>
                         </div>
                     </div>
 

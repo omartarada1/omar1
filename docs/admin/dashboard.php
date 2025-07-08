@@ -587,7 +587,7 @@ $website_texts = $stmt->fetchAll();
         <div class="header">
             <h1>Dashboard</h1>
             <div class="user-info">
-                <span>Welcome, <?php echo htmlspecialchars($_SESSION['admin_username']); ?></span>
+                <span>Welcome, <?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'Admin'); ?></span>
                 <a href="logout.php" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>

@@ -1032,6 +1032,95 @@ html {
     margin-top: 2rem;
 }
 
+.payment-methods {
+    margin-bottom: 2rem;
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.payment-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background: white;
+}
+
+.payment-option:hover {
+    border-color: #007aff;
+    background: #f8faff;
+    transform: translateY(-2px);
+}
+
+.payment-option.selected {
+    border-color: #007aff;
+    background: #007aff;
+    color: white;
+}
+
+.payment-option i {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    color: #007aff;
+}
+
+.payment-option.selected i {
+    color: white;
+}
+
+.payment-option span {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.payment-option small {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.payment-option.selected small {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.payment-form {
+    background: #f9f9f9;
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+}
+
+.payment-form h4 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+#card-element {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+#card-errors {
+    color: #e74c3c;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+#paypal-button-container {
+    margin-top: 1rem;
+}
+
 .payment-note {
     background: #e8f4fd;
     padding: 1rem;

@@ -27,7 +27,7 @@ class EmailHandler {
     public function sendCustomerConfirmation($data) {
         try {
             $to = $data['email'];
-            $subject = "iCloud Unlock Request Confirmation - Order #" . $data['request_id'];
+            $subject = "Fix Smart - Service Request Confirmation - Order #" . $data['request_id'];
             
             $message = $this->getCustomerEmailTemplate($data);
             $headers = $this->getEmailHeaders();
@@ -49,8 +49,8 @@ class EmailHandler {
 
     public function sendAdminNotification($data) {
         try {
-            $to = $this->settings['admin_email'] ?? 'admin@icloudunlockpro.com';
-            $subject = "New iCloud Unlock Request - Order #" . $data['request_id'];
+            $to = $this->settings['admin_email'] ?? 'admin@fixsmart.com';
+            $subject = "New Fix Smart Service Request - Order #" . $data['request_id'];
             
             $message = $this->getAdminEmailTemplate($data);
             $headers = $this->getEmailHeaders();
@@ -71,8 +71,8 @@ class EmailHandler {
     }
 
     private function getEmailHeaders() {
-        $site_name = $this->settings['site_name'] ?? 'iCloud Unlock Pro';
-        $admin_email = $this->settings['admin_email'] ?? 'admin@icloudunlockpro.com';
+        $site_name = $this->settings['site_name'] ?? 'Fix Smart';
+        $admin_email = $this->settings['admin_email'] ?? 'admin@fixsmart.com';
         
         return "MIME-Version: 1.0\r\n" .
                "Content-Type: text/html; charset=UTF-8\r\n" .
@@ -114,13 +114,14 @@ class EmailHandler {
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h1>🔓 iCloud Unlock Pro</h1>
+                    <h1>🔓 Fix Smart</h1>
                     <p>Order Confirmation</p>
                 </div>
                 
                 <div class='content'>
                     <h2>Thank you for your order!</h2>
-                    <p>We have received your iCloud unlock request and will begin processing it immediately.</p>
+                    <p><strong>Your unlock request has been received. We are currently working on unlocking your device. Thank you for choosing Fix Smart.</strong></p>
+                    <p>Your payment has been confirmed and we will begin processing your device unlock immediately.</p>
                     
                     <div class='order-details'>
                         <h3>Order Details</h3>
@@ -160,13 +161,13 @@ class EmailHandler {
                     
                     <p><strong>Need help?</strong> Contact our support team:</p>
                     <ul>
-                        <li>📧 Email: support@icloudunlockpro.com</li>
+                        <li>📧 Email: support@fixsmart.com</li>
                         <li>📱 WhatsApp: {$this->settings['whatsapp_number']}</li>
                     </ul>
                 </div>
                 
                 <div class='footer'>
-                    <p>© 2024 iCloud Unlock Pro. All rights reserved.</p>
+                    <p>© 2024 Fix Smart. All rights reserved.</p>
                     <p>This is an automated email. Please do not reply to this message.</p>
                 </div>
             </div>
