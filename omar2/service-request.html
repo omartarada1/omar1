@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Request - Fix Smart</title>
+    <meta name="description" content="Submit your iCloud unlock request for iPhone, iPad, and Mac devices.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>Fix Smart</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="index.html">Home</a>
+                    <a href="service-request.html" class="active">Service Request</a>
+                    <a href="guarantees.html">Guarantees</a>
+                    <a href="index.html#contact">Contact</a>
+                    <a href="admin/">Admin</a>
+                </div>
+                <div class="nav-mobile">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Service Request Form Section -->
+    <section class="service-request-page">
+        <div class="container">
+            <div class="page-header">
+                <h1>Submit Service Request</h1>
+                <p>Fill out the form below to start your device unlock process</p>
+            </div>
+            
+            <form id="serviceRequestForm" class="service-form">
+                <!-- Customer Information -->
+                <div class="form-section">
+                    <h2>Customer Information</h2>
+                    <div class="form-group">
+                        <label for="customerEmail">Email Address *</label>
+                        <input type="email" id="customerEmail" name="customerEmail" required placeholder="your@email.com">
+                    </div>
+                </div>
+
+                <!-- Device Selection -->
+                <div class="form-section">
+                    <h2>Device Information</h2>
+                    <div class="form-group">
+                        <label for="deviceType">Device Type *</label>
+                        <select id="deviceType" name="deviceType" required>
+                            <option value="">Select Device Type</option>
+                            <option value="iphone">iPhone</option>
+                            <option value="ipad">iPad</option>
+                            <option value="mac">Mac</option>
+                        </select>
+                    </div>
+
+                    <!-- Device Versions (will be populated dynamically) -->
+                    <div id="deviceVersions" class="device-versions" style="display: none;">
+                        <div class="form-group">
+                            <label for="deviceVersion">Select Device Model *</label>
+                            <div id="versionsList" class="versions-list">
+                                <!-- Device versions will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="imeiSerial">IMEI or Serial Number *</label>
+                        <input type="text" id="imeiSerial" name="imeiSerial" required placeholder="Enter IMEI or Serial Number">
+                        <small>For iPhone/iPad: Settings → General → About. For Mac: Apple Menu → About This Mac</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Additional Details (Optional)</label>
+                        <textarea id="description" name="description" placeholder="Any additional information about your device or specific requirements"></textarea>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div id="orderSummary" class="order-summary" style="display: none;">
+                    <h3>Order Summary</h3>
+                    <div class="summary-details">
+                        <div class="summary-item">
+                            <span>Device:</span>
+                            <span id="selectedDevice">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Model:</span>
+                            <span id="selectedModel">-</span>
+                        </div>
+                        <div class="summary-item total">
+                            <span>Total Amount:</span>
+                            <span id="totalAmount">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <div id="paymentSection" class="payment-section" style="display: none;">
+                    <h2>Payment Information</h2>
+                    <p class="payment-note">We only accept USDT (Tether) cryptocurrency payments for security and convenience.</p>
+                    
+                    <div class="usdt-payment-info">
+                        <div class="wallet-info">
+                            <h3>Send USDT to the following address:</h3>
+                            
+                            <div class="wallet-address-container">
+                                <div class="wallet-details">
+                                    <strong>USDT Wallet Address:</strong>
+                                    <div class="address-display">
+                                        <span id="usdtWalletAddress">TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE</span>
+                                        <button type="button" class="copy-btn" onclick="copyWalletAddress()">
+                                            <i class="fas fa-copy"></i> Copy
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="qr-code-container">
+                                    <div class="qr-code" id="qrCodeDisplay">
+                                        <!-- QR Code will be generated here -->
+                                        <div class="qr-placeholder">
+                                            <i class="fas fa-qrcode"></i>
+                                            <p>QR Code</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-instructions">
+                                <h4>Payment Instructions:</h4>
+                                <ol>
+                                    <li>Copy the wallet address above or scan the QR code</li>
+                                    <li>Send the exact amount of <strong id="usdtAmount">0</strong> USDT to this address</li>
+                                    <li>Copy and paste the transaction hash below</li>
+                                    <li>Submit the form to complete your order</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transactionHash">Transaction Hash *</label>
+                            <input type="text" id="transactionHash" name="transactionHash" required placeholder="Enter transaction hash after sending USDT">
+                            <small>This is the unique ID of your USDT transaction. You can find it in your wallet or exchange.</small>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Support Note -->
+                    <div class="support-note">
+                        <div class="support-content">
+                            <i class="fas fa-info-circle"></i>
+                            <p>If you have any issues with payment, you can place your order directly with our support team via WhatsApp.</p>
+                            <a href="https://wa.me/15551234567" target="_blank" class="whatsapp-btn">
+                                <i class="fab fa-whatsapp"></i>
+                                Contact WhatsApp Support
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large" id="submitServiceRequest">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Service Request
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-unlock-alt"></i>
+                    <span>Fix Smart</span>
+                    <p>Professional Apple device unlocking services</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Pages</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="service-request.html">Service Request</a></li>
+                        <li><a href="guarantees.html">Guarantees</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="index.html#contact">Contact Us</a></li>
+                        <li><a href="index.html#how-it-works">How It Works</a></li>
+                        <li><a href="admin/">Admin Login</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Fix Smart. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/15551234567" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing your request...</p>
+        </div>
+    </div>
+
+    <script src="js/service-request.js"></script>
+</body>
+</html>
