@@ -1,0 +1,32 @@
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN=your_bot_token_here
+TELEGRAM_CHANNEL_ID=your_channel_id_here
+ADMIN_USER_ID=your_admin_user_id_here
+
+# Database Configuration
+DATABASE_URL=sqlite:///trading_bot.db
+# For PostgreSQL: postgresql://username:password@localhost/dbname
+# For MySQL: mysql://username:password@localhost/dbname
+
+# Flask Configuration
+SECRET_KEY=your-secret-key-change-this-in-production
+FLASK_ENV=development
+
+# Trading Configuration
+TRIAL_DAYS=3
+MONTHLY_SUBSCRIPTION_PRICE=29.99
+
+# Technical Analysis Configuration
+RSI_PERIOD=14
+RSI_OVERBOUGHT=70
+RSI_OVERSOLD=30
+MACD_FAST=12
+MACD_SLOW=26
+MACD_SIGNAL=9
+
+# Signal intervals (in minutes)
+SIGNAL_INTERVAL=60
+
+# Notification settings
+ENABLE_NOTIFICATIONS=True
+SUBSCRIPTION_WARNING_DAYS=1 
