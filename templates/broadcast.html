@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Broadcast - Trading Signals Admin{% endblock %}
+{% block page_title %}Broadcast Message{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-broadcast-tower me-2"></i>Send Broadcast Message
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message Content *</label>
+                        <textarea class="form-control" id="message" name="message" rows="8" 
+                                  placeholder="Enter your broadcast message here..." required></textarea>
+                        <div class="form-text">
+                            This message will be sent to all active subscribers. Use markdown formatting for better presentation.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Message Preview</label>
+                        <div class="border rounded p-3 bg-light" id="preview">
+                            <p class="text-muted">Message preview will appear here...</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" onclick="clearMessage()">
+                            <i class="fas fa-times me-2"></i>Clear
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Send Broadcast
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Broadcast Guidelines
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>Message Types:</h6>
+                <ul class="list-unstyled">
+                    <li><strong>📢 Announcements:</strong> Important updates</li>
+                    <li><strong>🎯 Market Updates:</strong> Market analysis</li>
+                    <li><strong>⚠️ Warnings:</strong> Risk alerts</li>
+                    <li><strong>🎉 Celebrations:</strong> Success stories</li>
+                </ul>
+                
+                <h6>Formatting Tips:</h6>
+                <ul class="list-unstyled">
+                    <li><code>**bold**</code> for emphasis</li>
+                    <li><code>*italic*</code> for highlights</li>
+                    <li><code>`code`</code> for technical terms</li>
+                    <li>Use emojis for visual appeal</li>
+                </ul>
+                
+                <h6>Best Practices:</h6>
+                <ul class="list-unstyled">
+                    <li>Keep messages concise</li>
+                    <li>Include clear call-to-action</li>
+                    <li>Use professional tone</li>
+                    <li>Test with preview first</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>Recipients
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-primary">156</h4>
+                        <small class="text-muted">Active Subscribers</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-warning">23</h4>
+                        <small class="text-muted">Trial Users</small>
+                    </div>
+                </div>
+                <hr>
+                <small class="text-muted">
+                    Message will be sent to all active and trial subscribers.
+                </small>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Recent Broadcasts
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted">2024-01-15 14:30</small>
+                    <p class="mb-1">📈 Market Update: Bitcoin showing strong momentum...</p>
+                    <small class="text-success">Sent to 179 users</small>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">2024-01-14 09:15</small>
+                    <p class="mb-1">⚠️ Important: Market volatility expected today...</p>
+                    <small class="text-success">Sent to 179 users</small>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">2024-01-13 16:45</small>
+                    <p class="mb-1">🎉 Congratulations! 80% success rate this week...</p>
+                    <small class="text-success">Sent to 179 users</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Live preview functionality
+document.getElementById('message').addEventListener('input', function() {
+    const message = this.value;
+    const preview = document.getElementById('preview');
+    
+    if (message.trim()) {
+        // Simple markdown to HTML conversion
+        let html = message
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/\n/g, '<br>');
+        
+        preview.innerHTML = html;
+    } else {
+        preview.innerHTML = '<p class="text-muted">Message preview will appear here...</p>';
+    }
+});
+
+function clearMessage() {
+    document.getElementById('message').value = '';
+    document.getElementById('preview').innerHTML = '<p class="text-muted">Message preview will appear here...</p>';
+}
+
+// Auto-resize textarea
+document.getElementById('message').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+</script>
+{% endblock %} 

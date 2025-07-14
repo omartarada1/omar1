@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Trading Signals Admin{% endblock %}
+{% block page_title %}Performance Analytics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Success Rate Chart -->
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Success Rate Over Time
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="success-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signals Performance Chart -->
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Signals Performance
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="signals-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-3x text-white-50 mb-3"></i>
+                <h3 class="text-white">75%</h3>
+                <p class="text-white-50 mb-0">Success Rate</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-trophy fa-3x text-white-50 mb-3"></i>
+                <h3 class="text-white">156</h3>
+                <p class="text-white-50 mb-0">Winning Trades</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-area fa-3x text-white-50 mb-3"></i>
+                <h3 class="text-white">$12,450</h3>
+                <p class="text-white-50 mb-0">Total Profit</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-clock fa-3x text-white-50 mb-3"></i>
+                <h3 class="text-white">24</h3>
+                <p class="text-white-50 mb-0">Pending Trades</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Statistics -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>Recent Performance
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Signals</th>
+                                <th>Wins</th>
+                                <th>Success Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-15</td>
+                                <td>8</td>
+                                <td>6</td>
+                                <td><span class="badge bg-success">75%</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-14</td>
+                                <td>12</td>
+                                <td>9</td>
+                                <td><span class="badge bg-success">75%</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-13</td>
+                                <td>10</td>
+                                <td>7</td>
+                                <td><span class="badge bg-success">70%</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-12</td>
+                                <td>15</td>
+                                <td>12</td>
+                                <td><span class="badge bg-success">80%</span></td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-11</td>
+                                <td>6</td>
+                                <td>4</td>
+                                <td><span class="badge bg-warning">67%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Strategy Performance
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle p-2 me-3">
+                                <i class="fas fa-chart-line text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">RSI Strategy</h6>
+                                <small class="text-muted">85% success rate</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info rounded-circle p-2 me-3">
+                                <i class="fas fa-chart-bar text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">MACD Strategy</h6>
+                                <small class="text-muted">72% success rate</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning rounded-circle p-2 me-3">
+                                <i class="fas fa-chart-area text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Bollinger Bands</h6>
+                                <small class="text-muted">68% success rate</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle p-2 me-3">
+                                <i class="fas fa-chart-line text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">EMA Crossover</h6>
+                                <small class="text-muted">65% success rate</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    // Success Rate Chart
+    var successData = {{ success_chart | safe }};
+    Plotly.newPlot('success-chart', successData.data, successData.layout);
+
+    // Signals Performance Chart
+    var signalsData = {{ signals_chart | safe }};
+    Plotly.newPlot('signals-chart', signalsData.data, signalsData.layout);
+</script>
+{% endblock %} 

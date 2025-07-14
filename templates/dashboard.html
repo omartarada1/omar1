@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Trading Signals Admin{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group" role="group">
+    <a href="{{ url_for('run_analysis') }}" class="btn btn-success btn-sm">
+        <i class="fas fa-play me-1"></i>Run Analysis
+    </a>
+    <a href="{{ url_for('new_signal') }}" class="btn btn-primary btn-sm">
+        <i class="fas fa-plus me-1"></i>New Signal
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Statistics Cards -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-white-50 text-xs font-weight-bold text-uppercase mb-1">
+                            Total Users
+                        </div>
+                        <div class="stats-number">{{ total_users }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-white-50 text-xs font-weight-bold text-uppercase mb-1">
+                            Active Subscriptions
+                        </div>
+                        <div class="stats-number">{{ active_subscriptions }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-white-50 text-xs font-weight-bold text-uppercase mb-1">
+                            Total Signals
+                        </div>
+                        <div class="stats-number">{{ total_signals }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chart-line fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stats-card h-100">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-white-50 text-xs font-weight-bold text-uppercase mb-1">
+                            Bot Status
+                        </div>
+                        <div class="stats-number text-success">Online</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-robot fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Chart -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-area me-2"></i>Performance Overview
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="performance-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <a href="{{ url_for('new_signal') }}" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>New Signal
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <a href="{{ url_for('broadcast') }}" class="btn btn-info w-100">
+                            <i class="fas fa-broadcast-tower me-2"></i>Broadcast
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <a href="{{ url_for('run_analysis') }}" class="btn btn-success w-100">
+                            <i class="fas fa-play me-2"></i>Run Analysis
+                        </a>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <a href="{{ url_for('subscribers') }}" class="btn btn-warning w-100">
+                            <i class="fas fa-users me-2"></i>Manage Users
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cog me-2"></i>System Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success rounded-circle p-2 me-3">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Telegram Bot</h6>
+                                <small class="text-muted">Online</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success rounded-circle p-2 me-3">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Database</h6>
+                                <small class="text-muted">Connected</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success rounded-circle p-2 me-3">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Analysis Engine</h6>
+                                <small class="text-muted">Running</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success rounded-circle p-2 me-3">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Notifications</h6>
+                                <small class="text-muted">Active</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    // Performance Chart
+    var performanceData = {{ performance_chart | safe }};
+    Plotly.newPlot('performance-chart', performanceData.data, performanceData.layout);
+</script>
+{% endblock %} 

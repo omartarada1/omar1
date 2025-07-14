@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Signals - Trading Signals Admin{% endblock %}
+{% block page_title %}Signals Management{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('new_signal') }}" class="btn btn-primary btn-sm">
+    <i class="fas fa-plus me-1"></i>New Signal
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-chart-line me-2"></i>Trading Signals
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if signals.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Type</th>
+                        <th>Entry Price</th>
+                        <th>Target</th>
+                        <th>Stop Loss</th>
+                        <th>Strategy</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for signal in signals.items %}
+                    <tr>
+                        <td>
+                            <strong>{{ signal.asset_symbol }}</strong>
+                        </td>
+                        <td>
+                            {% if signal.signal_type.value == 'buy' %}
+                                <span class="badge bg-success">BUY</span>
+                            {% else %}
+                                <span class="badge bg-danger">SELL</span>
+                            {% endif %}
+                        </td>
+                        <td>${{ "%.2f"|format(signal.entry_price) }}</td>
+                        <td>${{ "%.2f"|format(signal.target_price) if signal.target_price else 'N/A' }}</td>
+                        <td>${{ "%.2f"|format(signal.stop_loss) if signal.stop_loss else 'N/A' }}</td>
+                        <td>{{ signal.strategy_used or 'Manual' }}</td>
+                        <td>
+                            {% if signal.outcome.value == 'win' %}
+                                <span class="badge bg-success">WIN</span>
+                            {% elif signal.outcome.value == 'loss' %}
+                                <span class="badge bg-danger">LOSS</span>
+                            {% else %}
+                                <span class="badge bg-warning">PENDING</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ signal.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ url_for('edit_signal', signal_id=signal.id) }}" 
+                                   class="btn btn-outline-primary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-danger" 
+                                        onclick="deleteSignal({{ signal.id }})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if signals.pages > 1 %}
+        <nav aria-label="Signals pagination">
+            <ul class="pagination justify-content-center">
+                {% if signals.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('signals', page=signals.prev_num) }}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                {% for page_num in signals.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != signals.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('signals', page=page_num) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if signals.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('signals', page=signals.next_num) }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No signals found</h5>
+            <p class="text-muted">Create your first trading signal to get started.</p>
+            <a href="{{ url_for('new_signal') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Create Signal
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this signal? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function deleteSignal(signalId) {
+    if (confirm('Are you sure you want to delete this signal?')) {
+        fetch(`/signals/${signalId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Error deleting signal');
+            }
+        });
+    }
+}
+</script>
+{% endblock %} 

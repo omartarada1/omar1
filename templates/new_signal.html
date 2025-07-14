@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}New Signal - Trading Signals Admin{% endblock %}
+{% block page_title %}Create New Signal{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('signals') }}" class="btn btn-secondary btn-sm">
+    <i class="fas fa-arrow-left me-1"></i>Back to Signals
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-plus me-2"></i>Create Trading Signal
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="asset_symbol" class="form-label">Asset Symbol *</label>
+                            <input type="text" class="form-control" id="asset_symbol" name="asset_symbol" 
+                                   placeholder="e.g., BTC-USD, AAPL" required>
+                            <div class="form-text">Enter the trading symbol (e.g., BTC-USD, AAPL, EURUSD=X)</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="signal_type" class="form-label">Signal Type *</label>
+                            <select class="form-select" id="signal_type" name="signal_type" required>
+                                <option value="">Select signal type</option>
+                                <option value="buy">BUY</option>
+                                <option value="sell">SELL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="entry_price" class="form-label">Entry Price *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="entry_price" name="entry_price" 
+                                       step="0.01" placeholder="0.00" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="target_price" class="form-label">Target Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="target_price" name="target_price" 
+                                       step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="stop_loss" class="form-label">Stop Loss</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="stop_loss" name="stop_loss" 
+                                       step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="strategy_used" class="form-label">Strategy Used</label>
+                        <select class="form-select" id="strategy_used" name="strategy_used">
+                            <option value="">Select strategy</option>
+                            <option value="RSI Oversold">RSI Oversold</option>
+                            <option value="RSI Overbought">RSI Overbought</option>
+                            <option value="MACD Bullish">MACD Bullish</option>
+                            <option value="MACD Bearish">MACD Bearish</option>
+                            <option value="Bollinger Bands">Bollinger Bands</option>
+                            <option value="EMA Crossover">EMA Crossover</option>
+                            <option value="Manual">Manual Analysis</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Signal Description *</label>
+                        <textarea class="form-control" id="content" name="content" rows="4" 
+                                  placeholder="Describe the signal, reasoning, and any important details..." required></textarea>
+                        <div class="form-text">Provide a detailed explanation of the signal and your analysis.</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('signals') }}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Send Signal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Signal Guidelines
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>Asset Symbols:</h6>
+                <ul class="list-unstyled">
+                    <li><strong>Crypto:</strong> BTC-USD, ETH-USD</li>
+                    <li><strong>Stocks:</strong> AAPL, GOOGL, MSFT</li>
+                    <li><strong>Forex:</strong> EURUSD=X, GBPUSD=X</li>
+                </ul>
+                
+                <h6>Signal Types:</h6>
+                <ul class="list-unstyled">
+                    <li><span class="badge bg-success">BUY</span> - Bullish signal</li>
+                    <li><span class="badge bg-danger">SELL</span> - Bearish signal</li>
+                </ul>
+                
+                <h6>Strategies:</h6>
+                <ul class="list-unstyled">
+                    <li><strong>RSI:</strong> Relative Strength Index</li>
+                    <li><strong>MACD:</strong> Moving Average Convergence Divergence</li>
+                    <li><strong>BB:</strong> Bollinger Bands</li>
+                    <li><strong>EMA:</strong> Exponential Moving Average</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>Tips
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Always include reasoning for your signal
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Set realistic target prices
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Use stop losses to manage risk
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Keep descriptions clear and concise
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-fill asset symbol suggestions
+const assetSymbols = [
+    'BTC-USD', 'ETH-USD', 'AAPL', 'GOOGL', 'MSFT', 
+    'EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'TSLA', 'AMZN'
+];
+
+const assetInput = document.getElementById('asset_symbol');
+const datalist = document.createElement('datalist');
+datalist.id = 'asset-symbols';
+
+assetSymbols.forEach(symbol => {
+    const option = document.createElement('option');
+    option.value = symbol;
+    datalist.appendChild(option);
+});
+
+assetInput.setAttribute('list', 'asset-symbols');
+document.body.appendChild(datalist);
+</script>
+{% endblock %} 
